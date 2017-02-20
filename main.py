@@ -5,7 +5,8 @@ from __future__ import print_function
 import pyxhook.pyxhook as pyxhook
 import time
 import csv
-
+import sys
+from termios import tcflush, TCIOFLUSH
 
 class KeyStroke:
 	def __init__(self, key, mname, time):
@@ -96,7 +97,7 @@ def kbevent(event):
     else:
     	UpArray.append(keyEvent)
 
-    # If the ascii value matches spacebar, terminate the while loop
+    # If the ascii value matches carriage return, terminate the while loop
     if event.Ascii == 13:
     	if keyEvent.mname == "key up":
     		running = False
@@ -161,3 +162,4 @@ while i <= iterations:
 		i += 1
 	else:
 		print("Sorry. Password does not match. Please try again")
+	tcflush(sys.stdin, TCIOFLUSH)
