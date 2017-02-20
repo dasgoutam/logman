@@ -44,7 +44,7 @@ class StrokesLine:
 			holdTime = self.UpArray[i+1].time - self.DownArray[i+1].time
 			output.write(str(holdTime) + "\n")
 
-	def wirteFirstCSV(self):
+	def writeFirstCSV(self):
 		firstLine = []
 		for i in range(len(self.UpArray) - 1):
 			firstLine.append("H." + self.UpArray[i].key)
@@ -155,7 +155,7 @@ while i <= iterations:
 		writer = StrokesLine(UpArray, DownArray)
 		if i == 1:
 			writer.writeFirstLine()
-			writer.wirteFirstCSV()
+			writer.writeFirstCSV()
 		writer.writeLine()
 		writer.writeCSV()
 		i += 1
