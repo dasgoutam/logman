@@ -102,13 +102,13 @@ def kbevent(event):
 def printList(array):
 	for stroke in array:
 		print(stroke.key, stroke.mname, stroke.time, "#")
-	# print "##"
 
 pas = raw_input("Enter the password you want to log: ")
 iterations = raw_input("Enter the number of times you want to type the password: ")
 print("Nice! You may begin\n")
 
-for i in range(int(iterations)):
+i = int(iterations)
+while i:
 	UpArray = []
 	DownArray = []
 	# Create hookmanager
@@ -132,11 +132,11 @@ for i in range(int(iterations)):
 
 	if checkPass(UpArray):
 		writer = StrokesLine(UpArray, DownArray)
-		if i == 0:
+		if i == int(iterations):
 			writer.writeFirstLine()
 			writer.wirteFirstCSV()
 		writer.writeLine()
 		writer.writeCSV()
+		i -= 1
 	else:
 		print("Sorry. Password does not match. Please try again")
-		i -= 1
