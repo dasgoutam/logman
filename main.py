@@ -70,12 +70,12 @@ class StrokesLine:
 
 # This function is called at each iteration to check if the password entered is correct
 def checkPass(array):
-	global pas
+	global authPass
 	typedPass = ""
-	for i in range(len(array) - 1):
+	for i in range(len(array)):
 		typedPass += array[i].key
 
-	if pas == typedPass:
+	if authPass == typedPass:
 		return True
 	else:
 		return False
@@ -96,19 +96,38 @@ def kbevent(event):
 
     # If the ascii value matches spacebar, terminate the while loop
     if event.Ascii == 13:
-    	if keyEvent.mname == "key up":   		
-	        running = False
+    	if keyEvent.mname == "key up":
+    		running = False
+
+def passevent(event):
+	global running, authPass
+	authPass += event.Key
+	if event.Ascii == 13:
+		running = False
 
 def printList(array):
 	for stroke in array:
 		print(stroke.key, stroke.mname, stroke.time, "#")
 
-pas = raw_input("Enter the password you want to log: ")
-iterations = raw_input("Enter the number of times you want to type the password: ")
+
+print("Enter the password you want to log: ")
+authPass = ""
+hookman = pyxhook.HookManager()
+hookman.KeyDown = passevent
+hookman.HookKeyboard()
+hookman.start()
+running = True
+while running:
+	time.sleep(0.00001)
+hookman.cancel()
+
+# iterations = raw_input("Enter the number of times you want to type the password: ")
+iterations = 5
 print("Nice! You may begin\n")
 
-i = int(iterations)
-while i:
+i = 1
+while i <= iterations:
+	print("\nAttempt " + str(i) + ":")
 	UpArray = []
 	DownArray = []
 	# Create hookmanager
@@ -132,11 +151,11 @@ while i:
 
 	if checkPass(UpArray):
 		writer = StrokesLine(UpArray, DownArray)
-		if i == int(iterations):
+		if i == 1:
 			writer.writeFirstLine()
 			writer.wirteFirstCSV()
 		writer.writeLine()
 		writer.writeCSV()
-		i -= 1
+		i += 1
 	else:
 		print("Sorry. Password does not match. Please try again")
