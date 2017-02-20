@@ -68,7 +68,18 @@ class StrokesLine:
 		writer.writerow(line)
 
 
-	
+# This function is called at each iteration to check if the password entered is correct
+def checkPass(array):
+	global pas
+	typedPass = ""
+	for i in range(len(array) - 1):
+		typedPass += array[i].key
+
+	if pas == typedPass:
+		return True
+	else:
+		return False
+		
 # This function is called every time a key is presssed
 def kbevent(event):
     global running
@@ -93,40 +104,39 @@ def printList(array):
 		print(stroke.key, stroke.mname, stroke.time, "#")
 	# print "##"
 
-UpArray = []
-DownArray = []
-# Create hookmanager
-hookman = pyxhook.HookManager()
-# Define our callback to fire when a key is pressed down
-hookman.KeyDown = kbevent
-hookman.KeyUp = kbevent
-# Hook the keyboard
-hookman.HookKeyboard()
-# Start our listener
-hookman.start()
-# Create a loop to keep the application running
-running = True
-while running:
-     time.sleep(0.00001)
+pas = raw_input("Enter the password you want to log: ")
+iterations = raw_input("Enter the number of times you want to type the password: ")
+print("Nice! You may begin\n")
 
-# Close the listener when we are done
-hookman.cancel()
+for i in range(int(iterations)):
+	UpArray = []
+	DownArray = []
+	# Create hookmanager
+	hookman = pyxhook.HookManager()
+	# Define our callback to fire when a key is pressed down
+	hookman.KeyDown = kbevent
+	hookman.KeyUp = kbevent
+	# Hook the keyboard
+	hookman.HookKeyboard()
+	# Start our listener
 
-a = StrokesLine(UpArray, DownArray)
-a.writeFirstLine()
-a.writeLine()
-a.wirteFirstCSV()
-a.writeCSV()
+	hookman.start()
+	# Create a loop to keep the application running
+	running = True
+	while running:
+	     time.sleep(0.00001)
+
+	# Close the listener when we are done
+	hookman.cancel()
 
 
-# print("Key Down:\n")
-# # print printList(UpArray)
-# for stroke in DownArray:
-# 	print(stroke.key, stroke.mname, stroke.time, "#")
-# # print "###"
-# # print "counter:", counter
-# print(len(UpArray))
-# print("Key Up:\n")
-# print(printList(UpArray))
-# print(len(DownArray))
-# # file.close()
+	if checkPass(UpArray):
+		writer = StrokesLine(UpArray, DownArray)
+		if i == 0:
+			writer.writeFirstLine()
+			writer.wirteFirstCSV()
+		writer.writeLine()
+		writer.writeCSV()
+	else:
+		print("Sorry. Password does not match. Please try again")
+		i -= 1
