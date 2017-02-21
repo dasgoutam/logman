@@ -123,7 +123,7 @@ running = True
 while running:
 	time.sleep(0.00001)
 hookman.cancel()
-
+tcflush(sys.stdin, TCIOFLUSH)
 # iterations = raw_input("Enter the number of times you want to type the password: ")
 iterations = 5
 print("Nice! You may begin\n")
