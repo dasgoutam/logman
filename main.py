@@ -77,7 +77,7 @@ def checkPass(array):
 	typedPass = ""
 	for i in range(len(array)):
 		typedPass += array[i].key
-
+	# print("Typed Password: "+typedPass+"\n      Password: "+authPass)
 	if authPass == typedPass:
 		return True
 	else:
@@ -152,7 +152,7 @@ while i <= iterations:
 	hookman.cancel()
 
 
-	if checkPass(UpArray):
+	if checkPass(DownArray):
 		writer = StrokesLine(UpArray, DownArray)
 		if i == 1:
 			writer.writeFirstLine()
