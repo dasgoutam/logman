@@ -6,6 +6,7 @@ import pyxhook.pyxhook as pyxhook
 import time
 import csv
 import sys
+import pickle
 from termios import tcflush, TCIOFLUSH
 
 class KeyStroke:
@@ -47,6 +48,9 @@ class StrokesLine:
 
 	def writeFirstCSV(self):
 		firstLine = []
+		firstLine.append("subject")
+		firstLine.append("sessionIndex")
+		firstLine.append("rep")
 		for i in range(len(self.UpArray) - 1):
 			firstLine.append("H." + self.UpArray[i].key)
 			firstLine.append("DD." + self.DownArray[i].key + "." + self.DownArray[i+1].key)
@@ -56,8 +60,11 @@ class StrokesLine:
 		writer = csv.writer(open("output.csv", 'w'))
 		writer.writerow(firstLine)
 
-	def writeCSV(self):
+	def writeCSV(self, subject, session, rep):
 		line = []
+		line.append(subject)
+		line.append(str(session))
+		line.append(str(rep))
 		for i in range(len(self.UpArray) - 1):
 			holdTime = self.UpArray[i].time - self.DownArray[i].time
 			downDownTime = float(self.DownArray[i+1].time) - float(self.DownArray[i].time)
@@ -113,6 +120,17 @@ def printList(array):
 		print(stroke.key, stroke.mname, stroke.time, "#")
 
 
+if len(sys.argv) == 2:
+	subject = sys.argv[1]
+	NEWDATASET = True
+	sessionIndex = 1
+	subjectInfo = {"subject": subject, "session": sessionIndex}
+	pickle.dump(subjectInfo, open("subjectInfo.p", "w"))
+
+else:
+	NEWDATASET = False
+	subjectInfo = pickle.load(open("subjectInfo.p", "rb"))
+
 print("Enter the password you want to log: ")
 authPass = ""
 hookman = pyxhook.HookManager()
@@ -125,7 +143,7 @@ while running:
 hookman.cancel()
 tcflush(sys.stdin, TCIOFLUSH)
 # iterations = raw_input("Enter the number of times you want to type the password: ")
-iterations = 5
+iterations = 50
 print("Nice! You may begin\n")
 
 i = 1
@@ -154,12 +172,16 @@ while i <= iterations:
 
 	if checkPass(DownArray):
 		writer = StrokesLine(UpArray, DownArray)
-		if i == 1:
-			writer.writeFirstLine()
+		if i == 1 and NEWDATASET:
+			# writer.writeFirstLine()
 			writer.writeFirstCSV()
-		writer.writeLine()
-		writer.writeCSV()
+		# writer.writeLine()
+		writer.writeCSV(subjectInfo["subject"], subjectInfo["session"], i)
 		i += 1
 	else:
 		print("Sorry. Password does not match. Please try again")
 	tcflush(sys.stdin, TCIOFLUSH)
+
+subjectInfo["session"] += 1
+pickle.dump(subjectInfo, open("subjectInfo.p", "w"))
+print("\nEnd of session. Please execute the program again to start another session")
