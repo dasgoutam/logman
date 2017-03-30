@@ -121,6 +121,10 @@ def printList(array):
 
 
 if len(sys.argv) == 2:
+	print("WARNING!! A new dataset will be created and the existing dataset will be lost. Want to proceed<y/n>??")
+	ch = raw_input()
+	if ch!='y':
+		sys.exit()
 	subject = sys.argv[1]
 	NEWDATASET = True
 	sessionIndex = 1
@@ -143,7 +147,7 @@ while running:
 hookman.cancel()
 tcflush(sys.stdin, TCIOFLUSH)
 # iterations = raw_input("Enter the number of times you want to type the password: ")
-iterations = 50
+iterations = 5
 print("Nice! You may begin\n")
 
 i = 1
